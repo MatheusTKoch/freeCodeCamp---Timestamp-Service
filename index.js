@@ -31,14 +31,14 @@ app.get("/api/:date?", function (req, res, err) {
   if(!date) {
     res.json({unix: dateNow, utc: dateNowString});
   }
-  if (!date && err) {
+  if (!date.toString === 'Invalid Date' && err) {
     res.json({error: "Invalid Date"});
   }
   if(date.length <= 11) {
-    res.json({ unix: date, utc: new Date(date).toUTCString() })
+    res.json({ unix: Date.parse(date), utc: new Date(date).toUTCString() })
   }
   if(date.length == 13) {
-    res.json({ unix: date, utc: Date(date) })
+    res.json({ unix: date, utc: new Date(parseInt(date)).toUTCString() })
   }
 })
 
