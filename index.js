@@ -26,16 +26,19 @@ app.get("/api/hello", function (req, res) {
 
 app.get("/api/:date?", function (req, res, err) {
   const date = req.params.date;
-  const dateNowString = new Date();
+  const dateNowString = new Date().toUTCString();
   const dateNow = Date.now();
   if(!date) {
     res.json({unix: dateNow, utc: dateNowString});
   }
-  if(date) {
-    res.json({ unix: date})
-  }
-  if (err) {
+  if (!date && err) {
     res.json({error: "Invalid Date"});
+  }
+  if(date.length <= 11) {
+    res.json({ unix: date, utc: new Date(date).toUTCString() })
+  }
+  if(date.length == 13) {
+    res.json({ unix: date, utc: Date(date) })
   }
 })
 
