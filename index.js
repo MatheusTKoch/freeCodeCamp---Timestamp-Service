@@ -31,7 +31,8 @@ app.get("/api/:date?", function (req, res, err) {
   if(!date) {
     res.json({unix: dateNow, utc: dateNowString});
   }
-  if (!date.toString === 'Invalid Date' && err) {
+  if (date.length <= 11 && new Date(date).toUTCString() === 'Invalid Date'
+  || date.length >= 13 && new Date(parseInt(date)).toUTCString() === 'Invalid Date') {
     res.json({error: "Invalid Date"});
   }
   if(date.length <= 11) {
