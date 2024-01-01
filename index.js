@@ -24,24 +24,38 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-app.get("/api/:date?", function (req, res, err) {
-  const date = req.params.date;
-  const dateNowString = new Date().toUTCString();
-  const dateNow = Date.now();
-  if(!date) {
-    res.json({"unix": dateNow, "utc": dateNowString});
+app.get('/api', (req, res) => {
+  res.json(
+    {
+      "unix": new Date().getTime(),
+      "utc": new Date().toUTCString()
+    }
+  );
+});
+
+app.get('/api/:date_string', (req, res) => {
+  const {date_string} = req.params;
+  let date = new Date(date_string);
+
+  if (date.toString() === 'Invalid Date') {
+    date = new Date(parseInt(date_string));
   }
-  if (date.length <= 11 && new Date(date).toUTCString() === 'Invalid Date'
-  || date.length >= 13 && new Date(parseInt(date)).toUTCString() === 'Invalid Date') {
-    res.json({"error": "Invalid Date"});
+  if (date.toString() === 'Invalid Date') {
+    return res.json(
+      {
+        "error": "Invalid Date"
+      }
+    );
   }
-  if(date.length <= 11) {
-    res.json({ "unix": Date.parse(date), "utc": new Date(date).toUTCString() })
+  else {
+    return res.json(
+      {
+        "unix": date.getTime(),
+        "utc": date.toUTCString()
+      }
+    );
   }
-  if(date.length == 13) {
-    res.json({ "unix": Number(date), "utc": new Date(parseInt(date)).toUTCString() })
-  }
-})
+});
 
 
 
